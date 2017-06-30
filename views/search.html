@@ -1,0 +1,53 @@
+<div class="jumbotron text-center">
+    <!-- TITLE TEXT -->
+    <h1>Search</h1>
+    <p>Find an event near you.</p>
+
+    <!-- ENTER LOCATION -->
+    <div class="form-group">
+        <input type="text" class="form-control" name="name" ng-model="inputLocation" placeholder="Enter your location">
+    </div>
+
+    <!-- ENTER EVENT NAME -->
+    <div class="form-group">
+        <input type="text" class="form-control" name="name" ng-model="searchQuery" placeholder="Search for an event">
+    </div>
+
+    <!-- CATEGORY DROPDOWN MENU -->
+    <div class="dropdown-container">
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="true">
+            {{selectedCategory}}
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-categories" class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <li ng-repeat="cat in categoryList" ng-click="ChangeCategory(cat)"><a>{{cat}}</a></li>
+        </ul>
+    </div>
+
+    <!-- SEARCH BUTTON -->
+    <div class="form-group">
+        <button ng-click="SearchFunction()" type="submit" >Search</button>
+    </div>
+</div>
+
+<!-- SEARCH RESULTS FROM EVENTBRITE -->
+<div class="list-group">
+    <button type="button" class="list-group-item" ng-repeat="event in searchResults.events">{{event.name.text}}</button>
+</div>
+
+<!-- LOADING BOX -->
+<div class="jumbotron text-center" ng-show="isLoading">
+    <span class="glyphicon glyphicon-repeat spinner"></span>
+    <p>Loading....</p>
+</div>
+
+<!-- ERROR MESSAGE -->
+<div class="row show-hide-message" ng-show="isError">
+    <div class="alert alert-danger">{{ errorMessage }}</div>
+</div>
+
+<!-- NO RESULTS MESSAGE -->
+<div class="row show-hide-message" ng-show="noResults">
+    <div class="alert alert-warning">{{ errorMessage }}</div>
+</div>

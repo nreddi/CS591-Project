@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Latest compiled and minified jQuery -->
+    <script src="https://code.jquery.com/jquery-2.2.3.js"
+            integrity="sha256-laXWtGydpwqJ8JA+X9x2miwmaiKhn8tVmOVEigRNtP4=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+          integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+            integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+            crossorigin="anonymous"></script>
+    <!-- Angular (minified) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.2/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.2/angular-route.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.2/angular-cookies.js"></script>
+
+
+    <!--Controllers for this page/app -->
+    <script src="javascripts/controllers.js"></script>
+    <!-- Local styles -->
+    <link rel="stylesheet" href="stylesheets/style.css">
+
+</head>
+
+<body ng-app="cs411">
+<div ng-controller="cs411ctrl" ng-init="initApp()">
+    <img src="/images/world.gif"><span class="largeText">  EvenTube</span>
+    <h2>{{h2message}} {{name}}</h2>
+    <div>
+        <form class="form-inline" name="inputForm">
+            <div class="form-group">
+                <label class="sr-only" for="formName">Email address</label>
+                <input type="text" class="form-control" id="formName" placeholder="Enter name" ng-model="name" required>
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="formUID">Email address</label>
+                <input type="text" class="form-control" id="formUID" placeholder="Enter UID" ng-model="UID" required>
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="formDepartment">Password</label>
+                <input type="text" class="form-control" id="formDepartment" placeholder="Enter Department"
+                       ng-model="department" required>
+                <input type="hidden" value="{{user._id}}">
+            </div>
+            <button type="submit" class="btn btn-primary" ng-disabled="inputForm.$invalid" ng-click="createUser()">
+                {{buttonMessage}}
+            </button>
+        </form>
+        <br/>
+        <div ng-hide="authorized">
+            <br/>
+            <button type="submit" class="btn btn-primary" ng-click="doTwitterAuth()">Log in with Twitter</button>
+        </div>
+        <div ng-show="showLogin">
+            Name: <input type="text" ng-model="name">
+            Username: <input type="text" ng-model="username">
+            Password: <input type="password" ng-model="password">
+            <button class="btn btm-sm" ng-click="login()">Log in</button>
+            <button class="btn btm-sm" ng-click="register()">Register</button>
+
+        </div>
+        <br/>
+        <div ng-show="authorized">
+            <button class="btn btn-sm" ng-click="logout()">Log out</button>
+        </div>
+    </div>
+    <div class="col-xs-12" style="height:30px;"></div>
+    <div class="well col-md-6">
+        <ul class="list-group">
+            <li ng-controller="listController" class="list-group-item largeText" ng-repeat="user in users">{{user.name}}
+                <span ng-show="display"> {{user.UID}} {{user.department}}</span>
+                <button class="btn btn-sm pull-right btn-danger" ng-click="deleteUser(user._id);">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </button>
+                <button class="btn btn-sm pull-right btn-info" ng-click="showInfo(user._id);">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+                <button class="btn btn-sm pull-right btn-warning" ng-click="setUserUpdate(user);">
+                    <span class="glyphicon glyphicon-hand-up"></span>
+                </button>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>
+<div class="jumbotron text-center">
+    <!-- TITLE TEXT -->
+    <h1>Search</h1>
+    <p>Find an event near you.</p>
+
+    <!-- ENTER LOCATION -->
+    <div class="form-group">
+        <input type="text" class="form-control" name="name" ng-model="inputLocation" placeholder="Enter your location">
+    </div>
+
+    <!-- ENTER EVENT NAME -->
+    <div class="form-group">
+        <input type="text" class="form-control" name="name" ng-model="searchQuery" placeholder="Search for an event">
+    </div>
+
+    <!-- CATEGORY DROPDOWN MENU -->
+    <div class="dropdown-container">
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="true">
+            {{selectedCategory}}
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-categories" class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <li ng-repeat="cat in categoryList" ng-click="ChangeCategory(cat)"><a>{{cat}}</a></li>
+        </ul>
+    </div>
+
+    <!-- SEARCH BUTTON -->
+    <div class="form-group">
+        <button ng-click="SearchFunction()" type="submit" >Search</button>
+    </div>
+</div>
+
+<!-- SEARCH RESULTS FROM EVENTBRITE -->
+<div class="list-group">
+    <button type="button" class="list-group-item" ng-repeat="event in searchResults.events">{{event.name.text}}</button>
+</div>
+
+<!-- LOADING BOX -->
+<div class="jumbotron text-center" ng-show="isLoading">
+    <span class="glyphicon glyphicon-repeat spinner"></span>
+    <p>Loading....</p>
+</div>
+
+<!-- ERROR MESSAGE -->
+<div class="row show-hide-message" ng-show="isError">
+    <div class="alert alert-danger">{{ errorMessage }}</div>
+</div>
+
+<!-- NO RESULTS MESSAGE -->
+<div class="row show-hide-message" ng-show="noResults">
+    <div class="alert alert-warning">{{ errorMessage }}</div>
+</div>
